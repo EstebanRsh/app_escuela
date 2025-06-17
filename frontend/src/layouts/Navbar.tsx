@@ -7,12 +7,14 @@ const Navbar: React.FC = () => {
   const navbarTogglerRef = useRef<HTMLButtonElement>(null);
   const collapseNavbarRef = useRef<HTMLDivElement>(null);
 
-  // 1. Leer datos del usuario desde localStorage
+  // Se leen los datos que guardamos en el Login
   const userName = localStorage.getItem("userName");
   const userRole = localStorage.getItem("userRole");
 
+  // MEJORA 1: La función de Logout ahora limpia todo
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     localStorage.removeItem("userName");
     localStorage.removeItem("userRole");
     navigate("/login");
@@ -28,7 +30,7 @@ const Navbar: React.FC = () => {
   };
 
   const activeLinkStyle = {
-    color: "#FFD700",
+    color: "#FFD700", // Un color dorado para el enlace activo
     fontWeight: "600",
   };
 
@@ -73,7 +75,7 @@ const Navbar: React.FC = () => {
           id="navbarNav"
         >
           <ul className="navbar-nav me-auto">
-            {/* Enlace común para todos */}
+            {/* --- Enlace común para todos --- */}
             <li className="nav-item">
               <NavLink
                 className="nav-link"
@@ -87,13 +89,13 @@ const Navbar: React.FC = () => {
               </NavLink>
             </li>
 
-            {/* Enlaces para Administrador */}
+            {/* MEJORA 2: Enlaces para Administrador actualizados */}
             {userRole === "administrador" && (
               <>
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/Profile"
+                    to="/profile" // Ruta para gestionar usuarios
                     style={({ isActive }) =>
                       isActive ? activeLinkStyle : undefined
                     }
@@ -105,7 +107,7 @@ const Navbar: React.FC = () => {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/Profile"
+                    to="/admin/careers" // Ruta para gestionar carreras
                     style={({ isActive }) =>
                       isActive ? activeLinkStyle : undefined
                     }
@@ -117,25 +119,25 @@ const Navbar: React.FC = () => {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/Notifications"
+                    to="/admin/payments" // Ruta para gestionar pagos
                     style={({ isActive }) =>
                       isActive ? activeLinkStyle : undefined
                     }
                     onClick={handleNavLinkClick}
                   >
-                    <i className="bi bi-journal-album me-2"></i>Notificaciones
+                    <i className="bi bi-cash-coin me-2"></i>Pagos
                   </NavLink>
                 </li>
               </>
             )}
 
-            {/* Enlaces para Alumno */}
+            {/* --- Enlaces para Alumno --- */}
             {userRole === "alumno" && (
               <>
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/student/courses"
+                    to="/student/careers"
                     style={({ isActive }) =>
                       isActive ? activeLinkStyle : undefined
                     }
@@ -159,7 +161,7 @@ const Navbar: React.FC = () => {
               </>
             )}
 
-            {/* Enlaces para Profesor */}
+            {/* --- Enlaces para Profesor --- */}
             {userRole === "profesor" && (
               <li className="nav-item">
                 <NavLink
@@ -176,11 +178,11 @@ const Navbar: React.FC = () => {
             )}
           </ul>
 
-          {/* Botón Logout */}
+          {/* --- Botón Logout --- */}
           <div className="d-flex align-items-center">
             <button className="btn btn-outline-danger" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right me-2"></i>
-              Logout
+              Cerrar Sesión
             </button>
           </div>
         </div>

@@ -1,9 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// MEJORA 1: Definimos un tipo para los datos del usuario que esperamos del backend
+type UserData = {
+  username: string;
+  first_name: string;
+  role: 'administrador' | 'profesor' | 'alumno';
+};
+
+// MEJORA 2: Actualizamos la respuesta esperada para incluir los datos del usuario
 type LoginProcessResponse = {
   success: boolean;
   token?: string;
+  user?: UserData;
   message?: string;
 };
 
@@ -29,9 +38,15 @@ function Login() {
     }
   }, [alert]);
 
+  // MEJORA 3: El cambio principal está aquí. Ahora guardamos toda la info del usuario.
   const handleLoginResponse = (data: LoginProcessResponse) => {
-    if (data.success && data.token) {
+    if (data.success && data.token && data.user) {
+      // Guardamos toda la información necesaria en localStorage
       localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user)); // Objeto de usuario para otros componentes
+      localStorage.setItem("userName", data.user.first_name);   // Nombre para el Navbar
+      localStorage.setItem("userRole", data.user.role);         // Rol para el Navbar
+
       navigate("/dashboard");
     } else {
       setAlert({

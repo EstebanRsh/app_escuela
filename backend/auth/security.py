@@ -35,4 +35,4 @@ class Security:
            except Exception:
                return {"success": False, "message": "Token: unknown error!"}
        else:
-           return {"success": False, "message": "Authorization header missing!"}
+           return {"success": False, "message": "Authorization header missing!"} 

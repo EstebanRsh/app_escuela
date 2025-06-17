@@ -82,87 +82,90 @@ def create_user(us: InputUser):
         session.close()
 '''
 ''' La función create_user ha sido modificada para incluir verificaciones previas antes de intentar crear un nuevo usuario.'''
-@user.post("/users/add", status_code=status.HTTP_201_CREATED)
-def create_user(us: InputUser):
-    # --- MODIFICACIÓN CLAVE: Verificación previa ---
-    # 1. Comprobar si el username ya existe
-    existing_user = session.query(User).filter(User.username == us.username).first()
-    if existing_user:
-        return JSONResponse(
-            status_code=409,  # 409 Conflict
-            content={"status": "error", "message": "Este nombre de usuario ya está en uso.", "field": "username"}
-        )
-
-    # 2. Comprobar si el email ya existe
-    existing_email = session.query(UserDetail).filter(UserDetail.email == us.email).first()
-    if existing_email:
-        return JSONResponse(
-            status_code=409,
-            content={"status": "error", "message": "Este correo electrónico ya está registrado.", "field": "email"}
-        )
-
-    # 3. Comprobar si el DNI ya existe
-    existing_dni = session.query(UserDetail).filter(UserDetail.dni == us.dni).first()
-    if existing_dni:
-        return JSONResponse(
-            status_code=409,
-            content={"status": "error", "message": "Este DNI ya está registrado.", "field": "dni"}
-        )
-
-    # Si todas las verificaciones pasan, intentamos crear el usuario
+@user.post("/users/loginUser")
+def login_post(userIn: InputLogin): 
     try:
-        # Aquí puedes añadir el hashing de contraseña que vimos antes
-        newUser = User(us.username, us.password)
-        newUserDetail = UserDetail(us.firstname, us.lastname, us.dni, us.type, us.email)
-        newUser.userdetail = newUserDetail
+        # Busca al usuario y carga su información detallada
+        user = session.query(User).options(joinedload(User.userdetail)).filter(User.username == userIn.username).first()
         
-        session.add(newUser)
-        session.commit()
+        # ---> CORRECCIÓN IMPORTANTE <---
+        # Usamos la comparación directa como indica tu guía.
+        # Se verifica que el usuario exista y que la contraseña coincida.
+        if not user or not user.password == userIn.password:
+            return JSONResponse(
+                status_code=401,
+                content={"success": False, "message": "Usuario y/o password incorrectos!"},
+            )
         
-        return {"status": "success", "message": "Usuario creado con éxito!"}
+        # Verificamos que el usuario tenga detalles antes de usarlos.
+        if not user.userdetail:
+            error_msg = f"Error de integridad de datos: El usuario '{user.username}' no tiene detalles asociados."
+            print(error_msg)
+            return JSONResponse(
+                status_code=500,
+                content={"success": False, "message": error_msg},
+            )
 
-    except IntegrityError: # Captura errores de base de datos más específicos si algo se nos escapó
-        session.rollback()
+        # Si todo está correcto, se genera el token y se devuelve la información
+        # como lo espera el frontend.
+        authData = Security.generate_token(user)
+        return JSONResponse(
+            status_code=200, 
+            content={
+                "success": True, 
+                "token": authData,
+                "user": {
+                    "username": user.username,
+                    "first_name": user.userdetail.first_name,
+                    "role": user.userdetail.type,
+                }
+            }
+        )
+            
+    except Exception as e:
+        print("Ha ocurrido un error inesperado en login_post:", e)
+        import traceback
+        traceback.print_exc()
         return JSONResponse(
             status_code=500,
-            content={"status": "error", "message": "Ocurrió un error inesperado al guardar los datos."}
+            content={"success": False, "message": "Error interno del servidor"},
         )
-    finally:
-        session.close()
        
 @user.post("/users/loginUser")
 def login_post(userIn: InputLogin): 
-   try:
-       # Busca al usuario en la base de datos 
-       user = session.query(User).filter(User.username == userIn.username).first()
-       
-       # Verifica si el usuario existe y la contraseña es correcta 
-       if not user or not user.password == userIn.password:
-           return JSONResponse(
-               status_code=401,
-               content={"success": False, "message": "Usuario y/o password incorrectos!"},
-           )
-       else:
-           # Si las credenciales son válidas, genera el token 
-           authData = Security.generate_token(user)
-           if not authData:
-               # Maneja el caso en que la generación del token falle 
-               return JSONResponse(
-                   status_code=401,
-                   content={"success": False, "message": "Error de generación de token!"},
-               )
-           else:
-               # Devuelve el token generado al cliente 
-               return JSONResponse(
-                   status_code=200, 
-                   content={"success": True, "token": authData}
-               )
-   except Exception as e:
-       print(e)
-       return JSONResponse(
-           status_code=500,
-           content={"success": False, "message": "Error interno del servidor"},
-       )
+    try:
+        # Busca al usuario y carga su información detallada para evitar otra consulta
+        user = session.query(User).options(joinedload(User.userdetail)).filter(User.username == userIn.username).first()
+        
+        # 1. VERIFICACIÓN SEGURA de usuario y contraseña
+        if not user or not Security.verify_password(userIn.password, user.password):
+            return JSONResponse(
+                status_code=401,
+                content={"success": False, "message": "Usuario o contraseña incorrectos"},
+            )
+        else:
+            # Si las credenciales son válidas, genera el token 
+            authData = Security.generate_token(user)
+            
+            # 2. DEVOLVER TOKEN Y DATOS DEL USUARIO
+            return JSONResponse(
+                status_code=200, 
+                content={
+                    "success": True, 
+                    "token": authData,
+                    "user": {
+                        "username": user.username,
+                        "first_name": user.userdetail.first_name,
+                        "role": user.userdetail.type,
+                    }
+                }
+            )
+    except Exception as e:
+        print(e)
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "message": "Error interno del servidor"},
+        )
 
 
 ## Inscribir un alumno a una carrera      
