@@ -338,6 +338,7 @@ function Signup() {
                     disabled={isLoading}
                   >
                     <option value="">Selecciona un tipo...</option>
+                    <option value="administrador">Administrador</option>
                     <option value="alumno">Alumno</option>
                     <option value="profesor">Profesor</option>
                   </select>

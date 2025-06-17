@@ -82,27 +82,79 @@ const Navbar: React.FC = () => {
               /* VISTA PARA USUARIOS AUTENTICADOS */
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/dashboard" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                  <NavLink
+                    className="nav-link"
+                    to="/dashboard"
+                    style={({ isActive }) =>
+                      isActive ? activeLinkStyle : undefined
+                    }
+                    onClick={handleNavLinkClick}
+                  >
                     <i className="bi bi-speedometer2 me-2"></i>Dashboard
                   </NavLink>
                 </li>
-                
+
                 {/* Enlaces para Administrador */}
                 {userRole === "administrador" && (
                   <>
                     <li className="nav-item">
-                      <NavLink className="nav-link" to="/admin/users" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                      <NavLink
+                        className="nav-link"
+                        to="/signup"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
                         <i className="bi bi-people-fill me-2"></i>Usuarios
                       </NavLink>
                     </li>
                     <li className="nav-item">
-                      <NavLink className="nav-link" to="/admin/careers" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                      <NavLink
+                        className="nav-link"
+                        to="/admin/careers"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
                         <i className="bi bi-journal-album me-2"></i>Carreras
                       </NavLink>
                     </li>
                     <li className="nav-item">
-                      <NavLink className="nav-link" to="/admin/payments" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                      <NavLink
+                        className="nav-link"
+                        to="/admin/payments"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
                         <i className="bi bi-cash-coin me-2"></i>Pagos
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink
+                        className="nav-link"
+                        to="/notifications"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
+                        <i className="bi bi-cash-coin me-2"></i>Notificaciones
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink
+                        className="nav-link"
+                        to="/profile"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
+                        <i className="bi bi-cash-coin me-2"></i>Perfil
                       </NavLink>
                     </li>
                   </>
@@ -110,24 +162,46 @@ const Navbar: React.FC = () => {
 
                 {/* Enlaces para Alumno */}
                 {userRole === "alumno" && (
-                   <>
-                     <li className="nav-item">
-                       <NavLink className="nav-link" to="/student/careers" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
-                         <i className="bi bi-card-checklist me-2"></i>Mis Carreras
-                       </NavLink>
-                     </li>
-                     <li className="nav-item">
-                       <NavLink className="nav-link" to="/student/payments" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
-                         <i className="bi bi-wallet-fill me-2"></i>Mis Pagos
-                       </NavLink>
-                     </li>
-                   </>
+                  <>
+                    <li className="nav-item">
+                      <NavLink
+                        className="nav-link"
+                        to="/student/careers"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
+                        <i className="bi bi-card-checklist me-2"></i>Mis
+                        Carreras
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink
+                        className="nav-link"
+                        to="/student/payments"
+                        style={({ isActive }) =>
+                          isActive ? activeLinkStyle : undefined
+                        }
+                        onClick={handleNavLinkClick}
+                      >
+                        <i className="bi bi-wallet-fill me-2"></i>Mis Pagos
+                      </NavLink>
+                    </li>
+                  </>
                 )}
 
                 {/* Enlaces para Profesor */}
                 {userRole === "profesor" && (
                   <li className="nav-item">
-                    <NavLink className="nav-link" to="/teacher/courses" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                    <NavLink
+                      className="nav-link"
+                      to="/teacher/courses"
+                      style={({ isActive }) =>
+                        isActive ? activeLinkStyle : undefined
+                      }
+                      onClick={handleNavLinkClick}
+                    >
                       <i className="bi bi-easel-fill me-2"></i>Mis Cursos
                     </NavLink>
                   </li>
@@ -137,13 +211,39 @@ const Navbar: React.FC = () => {
               /* VISTA PARA USUARIOS PÚBLICOS (NO AUTENTICADOS) */
               <>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                  <NavLink
+                    className="nav-link"
+                    to="/"
+                    style={({ isActive }) =>
+                      isActive ? activeLinkStyle : undefined
+                    }
+                    onClick={handleNavLinkClick}
+                  >
                     <i className="bi bi-house-door-fill me-2"></i>Home
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/info" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
-                    <i className="bi bi-info-circle-fill me-2"></i>Info
+                  <NavLink
+                    className="nav-link"
+                    to="/nosotros"
+                    style={({ isActive }) =>
+                      isActive ? activeLinkStyle : undefined
+                    }
+                    onClick={handleNavLinkClick}
+                  >
+                    <i className="bi bi-info-circle-fill me-2"></i>Nosotros
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link"
+                    to="/signup"
+                    style={({ isActive }) =>
+                      isActive ? activeLinkStyle : undefined
+                    }
+                    onClick={handleNavLinkClick}
+                  >
+                    <i className="bi bi-info-circle-fill me-2"></i>registrate
                   </NavLink>
                 </li>
               </>
@@ -160,7 +260,11 @@ const Navbar: React.FC = () => {
               </button>
             ) : (
               // Si no, muestra un enlace/botón para ir a Login
-              <NavLink to="/login" className="btn btn-outline-warning" onClick={handleNavLinkClick}>
+              <NavLink
+                to="/login"
+                className="btn btn-outline-warning"
+                onClick={handleNavLinkClick}
+              >
                 <i className="bi bi-box-arrow-in-right me-2"></i>
                 Login
               </NavLink>

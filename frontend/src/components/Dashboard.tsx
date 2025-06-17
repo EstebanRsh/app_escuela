@@ -1,14 +1,20 @@
+import InfoContainer from "./InfoContainer";
 function Dashboard() {
- const userName = JSON.parse(localStorage.getItem("user") || "{}").first_name;
-
-
- return (
-   <div>
-     <h2>Dashboard</h2>
-     <div>Bienvenido {userName}!</div>
-   </div>
- );
+  return (
+    <InfoContainer>
+      <h1>
+        <span className="text-warning">Bienvenido al Dashboard</span>
+      </h1>
+      <p className="lead">
+        Este es tu panel de control principal. Desde aquí podrás acceder a todas
+        las funcionalidades según tu rol.
+      </p>
+      <hr
+        className="my-4"
+        style={{ borderColor: "rgba(255, 255, 255, 0.5)" }}
+      />
+    </InfoContainer>
+  );
 }
-
 
 export default Dashboard;

@@ -13,9 +13,22 @@ body {
 }
 
 .navbar-custom-blue {
-  background-color: #2a3b4f; 
+  background-color: #2a3b4f;
+  padding: 1.5rem; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.2rem; 
 }
 
 .login-card-custom {
   background-color: #2a3b4f;
+}
+
+/* Contenedor de información reutilizable */
+.info-container {
+  background-color: #2a3b4f;
+  color: white;
+  padding: 1.5rem; 
+  border-radius: 0.2rem; 
+  margin-top: 0.2rem ; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./components/router/ProtectedRoutes";
 import PublicRoutes from "./components/router/PublicRoutes";
-import Layout from "./layouts/MainLayout"; 
+import Layout from "./layouts/MainLayout";
 import { lazy } from "react";
 
 const Home = lazy(() => import("./components/Home"));
@@ -10,7 +10,7 @@ const Signup = lazy(() => import("./components/Signup"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const Profile = lazy(() => import("./components/Profile"));
 const Notifications = lazy(() => import("./components/Notifications"));
-const Info = lazy(() => import("./components/Info"));
+const Nosotros = lazy(() => import("./components/Nosotros"));
 
 function App() {
   return (
@@ -20,15 +20,16 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/info" element={<Info />} />
+            <Route path="/nosotros" element={<Nosotros />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Route>
         </Route>
-        
+
         {/* --- RUTAS PROTEGIDAS --- */}
         <Route element={<ProtectedRoutes />}>
           <Route element={<Layout />}>
+            <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/notifications" element={<Notifications />} />

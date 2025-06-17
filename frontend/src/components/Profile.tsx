@@ -1,9 +1,15 @@
-type Props = {};
+import InfoContainer from './InfoContainer'; // 1. Importamos el contenedor
 
-
-function Profile({}: Props) {
- return <h2>Profile</h2>;
-}
-
+const Profile = () => {
+  return (
+    // 2. Usamos InfoContainer para el contenido del perfil
+    <InfoContainer>
+      <h1>Perfil de Usuario</h1>
+      <p className="lead">
+        Esta sección mostrará los detalles de tu perfil. ¡Próximamente!
+      </p>
+    </InfoContainer>
+  );
+};
 
 export default Profile;
