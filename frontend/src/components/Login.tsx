@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-// MEJORA 1: Definimos un tipo para los datos del usuario que esperamos del backend
+// Tipos de datos (sin cambios)
 type UserData = {
   username: string;
   first_name: string;
-  role: 'administrador' | 'profesor' | 'alumno';
+  role: "administrador" | "profesor" | "alumno";
 };
 
-// MEJORA 2: Actualizamos la respuesta esperada para incluir los datos del usuario
 type LoginProcessResponse = {
   success: boolean;
   token?: string;
@@ -38,15 +37,12 @@ function Login() {
     }
   }, [alert]);
 
-  // MEJORA 3: El cambio principal está aquí. Ahora guardamos toda la info del usuario.
   const handleLoginResponse = (data: LoginProcessResponse) => {
     if (data.success && data.token && data.user) {
-      // Guardamos toda la información necesaria en localStorage
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user)); // Objeto de usuario para otros componentes
-      localStorage.setItem("userName", data.user.first_name);   // Nombre para el Navbar
-      localStorage.setItem("userRole", data.user.role);         // Rol para el Navbar
-
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("userName", data.user.first_name);
+      localStorage.setItem("userRole", data.user.role);
       navigate("/dashboard");
     } else {
       setAlert({
@@ -65,10 +61,8 @@ function Login() {
       });
       return;
     }
-
     setIsLoading(true);
     setAlert(null);
-
     try {
       const response = await fetch(BACKEND_URL, {
         method: "POST",
@@ -93,11 +87,11 @@ function Login() {
       <div className="container">
         <div className="row justify-content-center align-items-center vh-100">
           <div className="col-11 col-sm-8 col-md-7 col-lg-5 col-xl-4">
-            <div className="card shadow-lg border-0 rounded-3 card-transparent">
-              <div className="card-body p-4 p-sm-5">
+            <div className="card shadow-lg border-0 rounded-3 login-card-custom">
+              <div className="card-body p-4 p-sm-5 login-card-custom text-white">
                 <div className="text-center mb-4">
                   <h1 className="h3 fw-bold">Iniciar Sesión</h1>
-                  <p className="text-muted">Ingresa a la plataforma</p>
+                  <p>Ingresa a la plataforma</p>
                 </div>
 
                 <form onSubmit={handleLogin} noValidate>
@@ -131,7 +125,7 @@ function Login() {
                         disabled={isLoading}
                       />
                       <button
-                        className="btn btn-outline-secondary"
+                        className="btn btn-outline-warning"
                         type="button"
                         onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                         aria-label={
@@ -152,7 +146,7 @@ function Login() {
                   <div className="d-grid mt-4">
                     <button
                       type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-outline-warning"
                       disabled={isLoading}
                     >
                       {isLoading ? (

@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./components/router/ProtectedRoutes";
 import PublicRoutes from "./components/router/PublicRoutes";
 import Layout from "./layouts/MainLayout"; 
-import PublicLayout from "./layouts/PublicLayout"; 
 import { lazy } from "react";
 
 const Home = lazy(() => import("./components/Home"));
@@ -19,7 +18,7 @@ function App() {
       <Routes>
         {/* --- RUTAS PÚBLICAS --- */}
         <Route element={<PublicRoutes />}>
-          <Route element={<PublicLayout />}>
+          <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/info" element={<Info />} />
             <Route path="/login" element={<Login />} />

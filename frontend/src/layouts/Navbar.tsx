@@ -3,23 +3,24 @@ import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-
   const navbarTogglerRef = useRef<HTMLButtonElement>(null);
   const collapseNavbarRef = useRef<HTMLDivElement>(null);
 
-  // Se leen los datos que guardamos en el Login
+  // Leemos los datos del usuario desde localStorage. Si no existen, serán 'null'.
   const userName = localStorage.getItem("userName");
   const userRole = localStorage.getItem("userRole");
 
-  // MEJORA 1: La función de Logout ahora limpia todo
+  // Función para cerrar sesión y limpiar localStorage
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("userName");
     localStorage.removeItem("userRole");
+    handleNavLinkClick(); // Cierra el menú en móvil
     navigate("/login");
   };
 
+  // Función para cerrar el menú en móviles al hacer clic en un enlace
   const handleNavLinkClick = () => {
     if (
       collapseNavbarRef.current &&
@@ -30,17 +31,17 @@ const Navbar: React.FC = () => {
   };
 
   const activeLinkStyle = {
-    color: "#FFD700", // Un color dorado para el enlace activo
+    color: "#FFD700", // El color dorado para el enlace activo
     fontWeight: "600",
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark p-3 shadow-sm navbar-custom-blue">
       <div className="container-fluid">
-        {/* Marca / Logo */}
+        {/* El logo lleva a Dashboard (si estás logueado) o a Home (si no) */}
         <NavLink
           className="navbar-brand d-flex align-items-center"
-          to="/dashboard"
+          to={userName ? "/dashboard" : "/"}
           onClick={handleNavLinkClick}
         >
           <i
@@ -49,6 +50,7 @@ const Navbar: React.FC = () => {
           ></i>
           <div className="d-flex flex-column">
             <strong>App Escuela</strong>
+            {/* El saludo solo se muestra si el usuario está logueado */}
             {userName && (
               <small style={{ fontSize: "0.7em", opacity: 0.8 }}>
                 Hola, {userName}
@@ -57,7 +59,7 @@ const Navbar: React.FC = () => {
           </div>
         </NavLink>
 
-        {/* Botón de menú (colapsable en móviles) */}
+        {/* Botón del menú hamburguesa para móviles */}
         <button
           ref={navbarTogglerRef}
           className="navbar-toggler"
@@ -68,122 +70,101 @@ const Navbar: React.FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Contenido colapsable */}
+        {/* Contenido del Navbar que se colapsa */}
         <div
           ref={collapseNavbarRef}
           className="collapse navbar-collapse"
           id="navbarNav"
         >
+          {/* --- SECCIÓN DE ENLACES DE NAVEGACIÓN (IZQUIERDA) --- */}
           <ul className="navbar-nav me-auto">
-            {/* --- Enlace común para todos --- */}
-            <li className="nav-item">
-              <NavLink
-                className="nav-link"
-                to="/dashboard"
-                style={({ isActive }) =>
-                  isActive ? activeLinkStyle : undefined
-                }
-                onClick={handleNavLinkClick}
-              >
-                <i className="bi bi-speedometer2 me-2"></i>Dashboard
-              </NavLink>
-            </li>
-
-            {/* MEJORA 2: Enlaces para Administrador actualizados */}
-            {userRole === "administrador" && (
+            {userName ? (
+              /* VISTA PARA USUARIOS AUTENTICADOS */
               <>
                 <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/profile" // Ruta para gestionar usuarios
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
-                    }
-                    onClick={handleNavLinkClick}
-                  >
-                    <i className="bi bi-people-fill me-2"></i>Usuarios
+                  <NavLink className="nav-link" to="/dashboard" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                    <i className="bi bi-speedometer2 me-2"></i>Dashboard
+                  </NavLink>
+                </li>
+                
+                {/* Enlaces para Administrador */}
+                {userRole === "administrador" && (
+                  <>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to="/admin/users" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                        <i className="bi bi-people-fill me-2"></i>Usuarios
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to="/admin/careers" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                        <i className="bi bi-journal-album me-2"></i>Carreras
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to="/admin/payments" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                        <i className="bi bi-cash-coin me-2"></i>Pagos
+                      </NavLink>
+                    </li>
+                  </>
+                )}
+
+                {/* Enlaces para Alumno */}
+                {userRole === "alumno" && (
+                   <>
+                     <li className="nav-item">
+                       <NavLink className="nav-link" to="/student/careers" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                         <i className="bi bi-card-checklist me-2"></i>Mis Carreras
+                       </NavLink>
+                     </li>
+                     <li className="nav-item">
+                       <NavLink className="nav-link" to="/student/payments" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                         <i className="bi bi-wallet-fill me-2"></i>Mis Pagos
+                       </NavLink>
+                     </li>
+                   </>
+                )}
+
+                {/* Enlaces para Profesor */}
+                {userRole === "profesor" && (
+                  <li className="nav-item">
+                    <NavLink className="nav-link" to="/teacher/courses" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                      <i className="bi bi-easel-fill me-2"></i>Mis Cursos
+                    </NavLink>
+                  </li>
+                )}
+              </>
+            ) : (
+              /* VISTA PARA USUARIOS PÚBLICOS (NO AUTENTICADOS) */
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                    <i className="bi bi-house-door-fill me-2"></i>Home
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/admin/careers" // Ruta para gestionar carreras
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
-                    }
-                    onClick={handleNavLinkClick}
-                  >
-                    <i className="bi bi-journal-album me-2"></i>Carreras
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/admin/payments" // Ruta para gestionar pagos
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
-                    }
-                    onClick={handleNavLinkClick}
-                  >
-                    <i className="bi bi-cash-coin me-2"></i>Pagos
+                  <NavLink className="nav-link" to="/info" style={({ isActive }) => (isActive ? activeLinkStyle : undefined)} onClick={handleNavLinkClick}>
+                    <i className="bi bi-info-circle-fill me-2"></i>Info
                   </NavLink>
                 </li>
               </>
-            )}
-
-            {/* --- Enlaces para Alumno --- */}
-            {userRole === "alumno" && (
-              <>
-                <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/student/careers"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
-                    }
-                    onClick={handleNavLinkClick}
-                  >
-                    <i className="bi bi-card-checklist me-2"></i>Mis Carreras
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink
-                    className="nav-link"
-                    to="/student/payments"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
-                    }
-                    onClick={handleNavLinkClick}
-                  >
-                    <i className="bi bi-wallet-fill me-2"></i>Mis Pagos
-                  </NavLink>
-                </li>
-              </>
-            )}
-
-            {/* --- Enlaces para Profesor --- */}
-            {userRole === "profesor" && (
-              <li className="nav-item">
-                <NavLink
-                  className="nav-link"
-                  to="/teacher/courses"
-                  style={({ isActive }) =>
-                    isActive ? activeLinkStyle : undefined
-                  }
-                  onClick={handleNavLinkClick}
-                >
-                  <i className="bi bi-easel-fill me-2"></i>Mis Cursos
-                </NavLink>
-              </li>
             )}
           </ul>
 
-          {/* --- Botón Logout --- */}
+          {/* --- SECCIÓN DE ACCIONES DE USUARIO (DERECHA) --- */}
           <div className="d-flex align-items-center">
-            <button className="btn btn-outline-danger" onClick={handleLogout}>
-              <i className="bi bi-box-arrow-right me-2"></i>
-              Cerrar Sesión
-            </button>
+            {userName ? (
+              // Si el usuario existe, muestra el botón de Logout en amarillo
+              <button className="btn btn-outline-danger" onClick={handleLogout}>
+                <i className="bi bi-box-arrow-right me-2"></i>
+                Cerrar Sesión
+              </button>
+            ) : (
+              // Si no, muestra un enlace/botón para ir a Login
+              <NavLink to="/login" className="btn btn-outline-warning" onClick={handleNavLinkClick}>
+                <i className="bi bi-box-arrow-in-right me-2"></i>
+                Login
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
