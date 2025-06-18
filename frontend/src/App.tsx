@@ -12,8 +12,10 @@ const Profile = lazy(() => import("./components/Profile"));
 const Notifications = lazy(() => import("./components/Notifications"));
 const Nosotros = lazy(() => import("./components/Nosotros"));
 const UserManagement = lazy(() => import("./components/admin/UserManagement"));
-const SignupDesarrollador = lazy(() => import("./components/SignupDesarrollador")
+const SignupDesarrollador = lazy(
+  () => import("./components/SignupDesarrollador")
 );
+const StudentCareers = lazy(() => import("./components/student/StudentCareer"));
 
 function App() {
   return (
@@ -26,7 +28,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/home" element={<Home />} />
             <Route path="/nosotros" element={<Nosotros />} />
-            <Route path="/signupDesarrollador" element={<SignupDesarrollador />} />
+            <Route
+              path="/signupDesarrollador"
+              element={<SignupDesarrollador />}
+            />
           </Route>
         </Route>
 
@@ -38,6 +43,7 @@ function App() {
             <Route path="/admin/users" element={<UserManagement />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/student/careers" element={<StudentCareers />} />
           </Route>
         </Route>
       </Routes>
