@@ -1,4 +1,4 @@
-import InfoContainer from './InfoContainer'; // 1. Importamos el contenedor
+import InfoContainer from './common/InfoContainer'; // 1. Importamos el contenedor
 
 const Profile = () => {
   return (

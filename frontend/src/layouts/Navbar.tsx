@@ -100,7 +100,7 @@ const Navbar: React.FC = () => {
                     <li className="nav-item">
                       <NavLink
                         className="nav-link"
-                        to="/signup"
+                        to="/admin/users"
                         style={({ isActive }) =>
                           isActive ? activeLinkStyle : undefined
                         }
@@ -237,13 +237,13 @@ const Navbar: React.FC = () => {
                 <li className="nav-item">
                   <NavLink
                     className="nav-link"
-                    to="/signup"
+                    to="/signupDesarrollador"
                     style={({ isActive }) =>
                       isActive ? activeLinkStyle : undefined
                     }
                     onClick={handleNavLinkClick}
                   >
-                    <i className="bi bi-info-circle-fill me-2"></i>registrate
+                    <i className="bi bi-info-circle-fill me-2"></i>Registrar
                   </NavLink>
                 </li>
               </>

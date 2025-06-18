@@ -11,6 +11,9 @@ const Dashboard = lazy(() => import("./components/Dashboard"));
 const Profile = lazy(() => import("./components/Profile"));
 const Notifications = lazy(() => import("./components/Notifications"));
 const Nosotros = lazy(() => import("./components/Nosotros"));
+const UserManagement = lazy(() => import("./components/admin/UserManagement"));
+const SignupDesarrollador = lazy(() => import("./components/SignupDesarrollador")
+);
 
 function App() {
   return (
@@ -20,9 +23,10 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/nosotros" element={<Nosotros />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/nosotros" element={<Nosotros />} />
+            <Route path="/signupDesarrollador" element={<SignupDesarrollador />} />
           </Route>
         </Route>
 
@@ -31,8 +35,9 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/admin/users" element={<UserManagement />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
       </Routes>

@@ -9,26 +9,45 @@ user = APIRouter()
 
 
 @user.get("/")
-### funcion helloUer documentacion
 def helloUser():
     return "Hello User!!!"
 
 @user.get("/users/all")
-def obtener_usuarios(req: Request): # <- La función ahora recibe el objeto Request 
-   # Llama al método para verificar el token de los encabezados 
-   has_access = Security.verify_token(req.headers)
- 
-   # Comprueba si el token es válido buscando la clave "iat" en el payload devuelto 
-   if "iat" in has_access:
-       # Si el token es válido, devuelve la lista de usuarios
-       usuarios = session.query(User).all()
-       return usuarios
-   else:
-       # Si el token no es válido, devuelve un error de no autorizado 
-       return JSONResponse(
-           status_code=401,
-           content=has_access, # Devuelve el mensaje de error de verify_token
-       )
+def obtener_usuarios(req: Request):
+    has_access = Security.verify_token(req.headers)
+
+    if "iat" not in has_access:
+        return JSONResponse(
+            status_code=401,
+            content=has_access,
+        )
+    
+    try:
+        users_with_details = session.query(User).options(joinedload(User.userdetail)).all()
+        response_data = []
+        for user in users_with_details:
+            user_data = {
+                "id": user.id,
+                "username": user.username,
+            }
+            if user.userdetail:
+                user_data["userdetail"] = {
+                    "first_name": user.userdetail.first_name,
+                    "last_name": user.userdetail.last_name,
+                    "dni": user.userdetail.dni,
+                    "email": user.userdetail.email,
+                    "type": user.userdetail.type,
+                }
+            response_data.append(user_data)
+            
+        return response_data
+        
+    except Exception as e:
+        print(f"Error al obtener usuarios: {e}")
+        return JSONResponse(
+            status_code=500,
+            content={"message": "Error interno al obtener los usuarios"},
+        )
 '''
 @user.get("/users/all")
 ### funcion helloUer documentacion
@@ -54,6 +73,7 @@ def getAllUsers():
         return {"message": "Error al obtener los usuarios"}
 '''
 ''' como pasar parametros por url
+
 @user.get("/users/{us}/{pw}")
 ### funcion helloUer documentacion
 def loginUser(us:str, pw:str):
@@ -65,7 +85,7 @@ def loginUser(us:str, pw:str):
     else:
         return "Contraseña incorrecta!"
 '''
-''' Usado anteriormente 
+
 @user.post("/users/add")
 def create_user(us: InputUser):
     try:
@@ -80,8 +100,7 @@ def create_user(us: InputUser):
         print("Error ---->> ", ex)
     finally:
         session.close()
-'''
-''' La función create_user ha sido modificada para incluir verificaciones previas antes de intentar crear un nuevo usuario.'''
+
 @user.post("/users/loginUser")
 def login_post(userIn: InputLogin): 
     try:

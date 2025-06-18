@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoContainer from './InfoContainer'; 
+import InfoContainer from './common/InfoContainer'; 
 
 const Nosotros: React.FC = () => {
   return (

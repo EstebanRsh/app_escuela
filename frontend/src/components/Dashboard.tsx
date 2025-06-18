@@ -1,4 +1,4 @@
-import InfoContainer from "./InfoContainer";
+import InfoContainer from "./common/InfoContainer";
 function Dashboard() {
   return (
     <InfoContainer>
