@@ -243,7 +243,7 @@ const Navbar: React.FC = () => {
                     }
                     onClick={handleNavLinkClick}
                   >
-                    <i className="bi bi-info-circle-fill me-2"></i>Registrar
+                    <i className="bi bi-info-circle-fill me-2"></i>
                   </NavLink>
                 </li>
               </>
