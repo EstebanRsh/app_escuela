@@ -220,7 +220,7 @@ const Signup = () => {
 
                   <button
                     type="submit"
-                    className="btn btn-warning"
+                    className="btn btn-brand"
                     disabled={loading}
                   >
                     {loading ? (

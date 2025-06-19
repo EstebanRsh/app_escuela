@@ -125,7 +125,7 @@ function Login() {
                         disabled={isLoading}
                       />
                       <button
-                        className="btn btn-outline-warning"
+                        className="btn btn-outline-brand"
                         type="button"
                         onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                         aria-label={
@@ -146,7 +146,7 @@ function Login() {
                   <div className="d-grid mt-4">
                     <button
                       type="submit"
-                      className="btn btn-outline-warning"
+                      className="btn btn-outline-brand"
                       disabled={isLoading}
                     >
                       {isLoading ? (

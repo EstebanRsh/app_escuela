@@ -156,7 +156,7 @@ const CareerManagement = () => {
             </select>
           </div>
           <div className="col-md-2 d-flex align-items-end">
-            <button type="submit" className="btn btn-primary w-100">Asignar</button>
+            <button type="submit" className="btn btn-primary-custom w-100">Asignar</button>
           </div>
         </div>
       </form>

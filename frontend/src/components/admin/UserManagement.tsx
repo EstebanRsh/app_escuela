@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import type { ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import InfoContainer from "../common/InfoContainer";
 import Pagination from "../common/Pagination";
+import DropupSelect from "../common/DropupSelect";
 
 // La interfaz de Usuario no cambia
 interface User {
@@ -18,7 +18,7 @@ interface User {
 }
 
 const UserManagement = () => {
-  // ESTADO 
+  // ESTADO
   const [users, setUsers] = useState<User[]>([]); // Lista completa del backend
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,7 @@ const UserManagement = () => {
 
   const navigate = useNavigate();
 
-  // CARGA DE DATOS 
+  // CARGA DE DATOS
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
@@ -56,7 +56,7 @@ const UserManagement = () => {
     fetchUsers();
   }, []);
 
-  // LÓGICA DE DATOS (Filtrado y Paginación) 
+  // LÓGICA DE DATOS (Filtrado y Paginación)
   // Esta lógica se calcula en cada renderizado. Es claro y directo.
 
   // Filtros para una búsqueda activa
@@ -89,10 +89,9 @@ const UserManagement = () => {
     setActiveSearch("");
     setCurrentPage(1);
   };
-
-  const handleRecordsPerPageChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Volvemos a la página 1
+  const handleRecordsPerPageSelect = (value: string | number) => {
+    setRecordsPerPage(Number(value));
+    setCurrentPage(1);
   };
 
   return (
@@ -101,7 +100,7 @@ const UserManagement = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="m-0">Gestión de Usuarios</h1>
         <button
-          className="btn btn-warning fw-bold"
+          className="btn btn-primary-custom"
           onClick={() => navigate("/signup")}
         >
           <i className="bi bi-plus-circle-fill me-2"></i>
@@ -119,14 +118,14 @@ const UserManagement = () => {
           onKeyUp={(e) => e.key === "Enter" && handleSearch()}
         />
         <button
-          className="btn btn-primary"
+          className=" btn btn-primary-custom"
           type="button"
           onClick={handleSearch}
         >
           Buscar
         </button>
         <button
-          className="btn btn-secondary"
+          className="btn btn-secondary-custom"
           type="button"
           onClick={clearSearch}
         >
@@ -200,18 +199,12 @@ const UserManagement = () => {
       {/* --- Controles de Paginación --- */}
       <div className="d-flex flex-wrap justify-content-between align-items-center mt-3 gap-3">
         <div className="d-flex align-items-center">
-          {/* CAMBIO 1: de 'text-muted' a 'text-white-50' */}
           <span className="text-white-50 me-2">Ver:</span>
-          <select
-            className="form-select form-select-sm"
-            style={{ width: "75px" }}
-            value={recordsPerPage}
-            onChange={handleRecordsPerPageChange}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-          </select>
+          <DropupSelect
+            options={[5, 10, 25]}
+            selectedValue={recordsPerPage}
+            onSelect={handleRecordsPerPageSelect}
+          />
         </div>
 
         <span className="text-white-50">
@@ -223,6 +216,7 @@ const UserManagement = () => {
           totalPages={totalPages}
           onPrevPage={() => setCurrentPage(currentPage - 1)}
           onNextPage={() => setCurrentPage(currentPage + 1)}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
     </InfoContainer>

@@ -3,7 +3,7 @@ function Dashboard() {
   return (
     <InfoContainer>
       <h1>
-        <span className="text-warning">Bienvenido al Dashboard</span>
+        <span className="text-brand">Bienvenido al Dashboard</span>
       </h1>
       <p className="lead">
         Este es tu panel de control principal. Desde aquí podrás acceder a todas

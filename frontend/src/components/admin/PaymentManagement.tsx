@@ -85,7 +85,7 @@ const PaymentManagement = () => {
     <InfoContainer>
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <h1 className="mb-4">Gestión de Pagos</h1>
-        <button className="btn btn-warning fw-bold" onClick={handleShowPayment}>
+        <button className="btn btn-brand fw-bold" onClick={handleShowPayment}>
           <i className="bi bi-plus-circle-fill me-2"></i>
           Registrar Nuevo Pago
         </button>

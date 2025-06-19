@@ -30,11 +30,6 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const activeLinkStyle = {
-    color: "#FFD700", // El color dorado para el enlace activo
-    fontWeight: "600",
-  };
-
   return (
     <nav className="navbar navbar-expand-lg navbar-dark p-3 shadow-sm navbar-custom-blue">
       <div className="container-fluid">
@@ -83,10 +78,9 @@ const Navbar: React.FC = () => {
               <>
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link"
                     to="/dashboard"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active-brand-link" : "nav-link"
                     }
                     onClick={handleNavLinkClick}
                   >
@@ -99,10 +93,9 @@ const Navbar: React.FC = () => {
                   <>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/admin/users"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -111,10 +104,9 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/admin/careers"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -123,10 +115,9 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/admin/payments"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -135,10 +126,9 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/notifications"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -147,10 +137,9 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/profile"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -165,10 +154,9 @@ const Navbar: React.FC = () => {
                   <>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/student/careers"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -178,10 +166,9 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        className="nav-link"
                         to="/student/payments"
-                        style={({ isActive }) =>
-                          isActive ? activeLinkStyle : undefined
+                        className={({ isActive }) =>
+                          isActive ? "nav-link active-brand-link" : "nav-link"
                         }
                         onClick={handleNavLinkClick}
                       >
@@ -195,10 +182,9 @@ const Navbar: React.FC = () => {
                 {userRole === "profesor" && (
                   <li className="nav-item">
                     <NavLink
-                      className="nav-link"
                       to="/teacher/courses"
-                      style={({ isActive }) =>
-                        isActive ? activeLinkStyle : undefined
+                      className={({ isActive }) =>
+                        isActive ? "nav-link active-brand-link" : "nav-link"
                       }
                       onClick={handleNavLinkClick}
                     >
@@ -212,10 +198,9 @@ const Navbar: React.FC = () => {
               <>
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link"
                     to="/"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active-brand-link" : "nav-link"
                     }
                     onClick={handleNavLinkClick}
                   >
@@ -224,10 +209,9 @@ const Navbar: React.FC = () => {
                 </li>
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link"
                     to="/nosotros"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active-brand-link" : "nav-link"
                     }
                     onClick={handleNavLinkClick}
                   >
@@ -236,10 +220,9 @@ const Navbar: React.FC = () => {
                 </li>
                 <li className="nav-item">
                   <NavLink
-                    className="nav-link"
                     to="/signupDesarrollador"
-                    style={({ isActive }) =>
-                      isActive ? activeLinkStyle : undefined
+                    className={({ isActive }) =>
+                      isActive ? "nav-link active-brand-link" : "nav-link"
                     }
                     onClick={handleNavLinkClick}
                   >
@@ -254,7 +237,7 @@ const Navbar: React.FC = () => {
           <div className="d-flex align-items-center">
             {userName ? (
               // Si el usuario existe, muestra el botón de Logout en amarillo
-              <button className="btn btn-outline-danger" onClick={handleLogout}>
+              <button className="btn btn-outline-brand" onClick={handleLogout}>
                 <i className="bi bi-box-arrow-right me-2"></i>
                 Cerrar Sesión
               </button>
@@ -262,7 +245,7 @@ const Navbar: React.FC = () => {
               // Si no, muestra un enlace/botón para ir a Login
               <NavLink
                 to="/login"
-                className="btn btn-outline-warning"
+                className="btn btn-outline-brand"
                 onClick={handleNavLinkClick}
               >
                 <i className="bi bi-box-arrow-in-right me-2"></i>

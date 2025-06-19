@@ -1,36 +1,52 @@
-
-// Definimos las "props" (propiedades) que nuestro componente necesita para funcionar.
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPrevPage: () => void; // Una función que se ejecutará al hacer clic en "Anterior"
-  onNextPage: () => void; // Una función que se ejecutará al hacer clic en "Siguiente"
+  onPrevPage: () => void;
+  onNextPage: () => void;
+  onPageChange: (pageNumber: number) => void; // <-- La nueva prop clave
 }
 
-// Usamos el tipado directo de props, que es la forma más moderna y sencilla.
-const Pagination = ({ currentPage, totalPages, onPrevPage, onNextPage }: PaginationProps) => {
-  
-  // Si solo hay una página (o ninguna), no tiene sentido mostrar los botones.
+const Pagination = ({
+  currentPage,
+  totalPages,
+  onPrevPage,
+  onNextPage,
+  onPageChange,
+}: PaginationProps) => {
+
   if (totalPages <= 1) {
     return null;
   }
-  
+
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
     <nav aria-label="Navegación de páginas">
-      <ul className="pagination mb-0">
-        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-          <button className="page-link" onClick={onPrevPage}>
-            Anterior
+      <ul className="pagination-custom mb-0">
+
+        {/* Botón "Anterior" (<<) */}
+        <li className={`page-item-custom ${currentPage === 1 ? "disabled" : ""}`}>
+          <button className="page-link-custom" onClick={onPrevPage} aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
           </button>
         </li>
-        <li className="page-item active" aria-current="page">
-          <span className="page-link">
-            {currentPage} de {totalPages}
-          </span>
-        </li>
-        <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-          <button className="page-link" onClick={onNextPage}>
-            Siguiente
+
+        {/* Números de página */}
+        {pageNumbers.map((number) => (
+          <li
+            key={number}
+            className={`page-item-custom ${number === currentPage ? "active" : ""}`}
+          >
+            <button className="page-link-custom" onClick={() => onPageChange(number)}>
+              {number}
+            </button>
+          </li>
+        ))}
+
+        {/* Botón "Siguiente" (>>) */}
+        <li className={`page-item-custom ${currentPage === totalPages ? "disabled" : ""}`}>
+          <button className="page-link-custom" onClick={onNextPage} aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
           </button>
         </li>
       </ul>
