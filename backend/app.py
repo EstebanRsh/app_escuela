@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from routes.user import user
 from routes.career import career
 from routes.payment import payment
-from routes.message import message
+from routes.notification import notification 
 from fastapi.middleware.cors import CORSMiddleware
 
 api_escu = FastAPI()
@@ -13,7 +13,7 @@ api_escu = FastAPI()
 api_escu.include_router(user)
 api_escu.include_router(career)
 api_escu.include_router(payment)
-api_escu.include_router(message)
+api_escu.include_router(notification)
 
 api_escu.add_middleware(
     CORSMiddleware,

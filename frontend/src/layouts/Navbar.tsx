@@ -1,6 +1,12 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+interface Notification {
+  id: number;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const navbarTogglerRef = useRef<HTMLButtonElement>(null);
@@ -10,6 +16,38 @@ const Navbar: React.FC = () => {
   const userName = localStorage.getItem("userName");
   const userRole = localStorage.getItem("userRole");
 
+  // --- ESTADOS PARA NOTIFICACIONES ---
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Efecto para buscar notificaciones cuando el usuario está logueado
+  useEffect(() => {
+    if (userName) {
+      const fetchNotifications = async () => {
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(
+            "http://localhost:8000/notifications/my",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (response.ok) {
+            const data: Notification[] = await response.json();
+            setNotifications(data);
+            setUnreadCount(data.filter((n) => !n.is_read).length);
+          }
+        } catch (error) {
+          console.error("Failed to fetch notifications:", error);
+        }
+      };
+
+      fetchNotifications();
+      // Opcional: Refrescar notificaciones cada cierto tiempo
+      const interval = setInterval(fetchNotifications, 60000); // cada 1 minuto
+      return () => clearInterval(interval);
+    }
+  }, [userName]);
   // Función para cerrar sesión y limpiar localStorage
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -29,7 +67,23 @@ const Navbar: React.FC = () => {
       navbarTogglerRef.current?.click();
     }
   };
-
+  // --- FUNCIÓN PARA MARCAR NOTIFICACIÓN COMO LEÍDA ---
+  const handleMarkAsRead = async (id: number) => {
+    const token = localStorage.getItem("token");
+    try {
+      await fetch(`http://localhost:8000/notifications/${id}/mark-as-read`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      // Actualizar estado local para reflejar el cambio inmediatamente
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+      );
+      setUnreadCount((prev) => prev - 1);
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-dark p-3 shadow-sm navbar-custom-blue">
       <div className="container-fluid">
@@ -126,7 +180,7 @@ const Navbar: React.FC = () => {
                     </li>
                     <li className="nav-item">
                       <NavLink
-                        to="/notifications"
+                        to="/admin/send-notification"
                         className={({ isActive }) =>
                           isActive ? "nav-link active-brand-link" : "nav-link"
                         }
@@ -236,11 +290,62 @@ const Navbar: React.FC = () => {
           {/* --- SECCIÓN DE ACCIONES DE USUARIO (DERECHA) --- */}
           <div className="d-flex align-items-center">
             {userName ? (
-              // Si el usuario existe, muestra el botón de Logout en amarillo
-              <button className="btn btn-outline-brand" onClick={handleLogout}>
-                <i className="bi bi-box-arrow-right me-2"></i>
-                Cerrar Sesión
-              </button>
+              <>
+                {/* --- NUEVO DROPDOWN DE NOTIFICACIONES --- */}
+                <div className="dropdown me-3">
+                  <button
+                    className="btn btn-dark position-relative"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="bi bi-bell-fill"></i>
+                    {unreadCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {unreadCount}
+                        <span className="visually-hidden">unread messages</span>
+                      </span>
+                    )}
+                  </button>
+                  <ul
+                    className="dropdown-menu dropdown-menu-dark dropdown-menu-end"
+                    style={{ width: "350px" }}
+                  >
+                    {notifications.length > 0 ? (
+                      notifications.map((n) => (
+                        <li key={n.id}>
+                          <a
+                            className={`dropdown-item ${
+                              !n.is_read ? "fw-bold" : ""
+                            }`}
+                            href="#"
+                            onClick={() => handleMarkAsRead(n.id)}
+                          >
+                            {n.message}
+                            <div className="text-muted small mt-1">
+                              {new Date(n.created_at).toLocaleString()}
+                            </div>
+                          </a>
+                        </li>
+                      ))
+                    ) : (
+                      <li>
+                        <span className="dropdown-item-text">
+                          No tienes notificaciones.
+                        </span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+
+                <button
+                  className="btn btn-outline-brand"
+                  onClick={handleLogout}
+                >
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Cerrar Sesión
+                </button>
+              </>
             ) : (
               // Si no, muestra un enlace/botón para ir a Login
               <NavLink
