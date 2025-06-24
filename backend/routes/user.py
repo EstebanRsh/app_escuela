@@ -101,72 +101,27 @@ def create_user(us: InputUser):
     finally:
         session.close()
 
+
 @user.post("/users/loginUser")
-def login_post(userIn: InputLogin): 
+def login_post(usu: InputLogin):
     try:
         # Busca al usuario y carga su información detallada
-        user = session.query(User).options(joinedload(User.userdetail)).filter(User.username == userIn.username).first()
-        
-        # ---> CORRECCIÓN IMPORTANTE <---
-        # Usamos la comparación directa como indica tu guía.
-        # Se verifica que el usuario exista y que la contraseña coincida.
-        if not user or not user.password == userIn.password:
-            return JSONResponse(
-                status_code=401,
-                content={"success": False, "message": "Usuario y/o password incorrectos!"},
-            )
-        
-        # Verificamos que el usuario tenga detalles antes de usarlos.
-        if not user.userdetail:
-            error_msg = f"Error de integridad de datos: El usuario '{user.username}' no tiene detalles asociados."
-            print(error_msg)
-            return JSONResponse(
-                status_code=500,
-                content={"success": False, "message": error_msg},
-            )
+        user = session.query(User).options(joinedload(User.userdetail)).filter(User.username == usu.username).first()
 
-        # Si todo está correcto, se genera el token y se devuelve la información
-        # como lo espera el frontend.
-        authData = Security.generate_token(user)
-        return JSONResponse(
-            status_code=200, 
-            content={
-                "success": True, 
-                "token": authData,
-                "user": {
-                    "username": user.username,
-                    "first_name": user.userdetail.first_name,
-                    "role": user.userdetail.type,
-                }
-            }
-        )
-            
-    except Exception as e:
-        print("Ha ocurrido un error inesperado en login_post:", e)
-        import traceback
-        traceback.print_exc()
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "message": "Error interno del servidor"},
-        )
-       
-@user.post("/users/loginUser")
-def login_post(userIn: InputLogin): 
-    try:
-        # Busca al usuario y carga su información detallada para evitar otra consulta
-        user = session.query(User).options(joinedload(User.userdetail)).filter(User.username == userIn.username).first()
-        
-        # 1. VERIFICACIÓN SEGURA de usuario y contraseña
-        if not user or not Security.verify_password(userIn.password, user.password):
-            return JSONResponse(
-                status_code=401,
-                content={"success": False, "message": "Usuario o contraseña incorrectos"},
-            )
-        else:
-            # Si las credenciales son válidas, genera el token 
+        # Verifica si el usuario existe y la contraseña es correcta (comparación directa)
+        if user and user.password == usu.password:
+            # Si las credenciales son válidas, genera el token
             authData = Security.generate_token(user)
             
-            # 2. DEVOLVER TOKEN Y DATOS DEL USUARIO
+            # Asegurarse de que el usuario tenga detalles antes de devolverlos
+            if not user.userdetail:
+                return JSONResponse(
+                    status_code=500,
+                    content={"success": False, "message": "Error de datos: el usuario no tiene detalles."},
+                )
+
+            # En caso de éxito, devuelve el token y los datos del usuario.
+            # La estructura de la respuesta se ajustó para que coincida con lo que el frontend espera.
             return JSONResponse(
                 status_code=200, 
                 content={
@@ -179,12 +134,22 @@ def login_post(userIn: InputLogin):
                     }
                 }
             )
+        else:
+            # Si el usuario no existe o la contraseña es incorrecta
+            return JSONResponse(
+                status_code=401,
+                content={"success": False, "message": "Usuario y/o password incorrectos!"},
+            )
     except Exception as e:
-        print(e)
+        print("Ha ocurrido un error inesperado en login_post:", e)
+        import traceback
+        traceback.print_exc()
         return JSONResponse(
             status_code=500,
             content={"success": False, "message": "Error interno del servidor"},
         )
+    finally:
+        session.close()
 
 
 ## Inscribir un alumno a una carrera      

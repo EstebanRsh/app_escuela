@@ -1,5 +1,5 @@
 from config.db import engine, Base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import sessionmaker, relationship
 from pydantic import BaseModel
 import datetime
@@ -14,6 +14,9 @@ class User(Base):
     userdetail = relationship("UserDetail", uselist=False)
     payments= relationship("Payment", uselist=True, back_populates="user")
     pivoteusercareer = relationship("PivoteUserCareer", back_populates="user")
+
+    sent_messages = relationship("Message", foreign_keys="[Message.sender_id]", back_populates="sender", cascade="all, delete-orphan")
+    received_messages = relationship("Message", foreign_keys="[Message.recipient_id]", back_populates="recipient", cascade="all, delete-orphan")
 
     def __init__(self, username, password):
         self.username = username
@@ -71,6 +74,24 @@ class PivoteUserCareer(Base):
     def __init__(self, id_user, id_career):
         self.id_user = id_user
         self.id_career = id_career
+
+class Message(Base):
+    __tablename__ = "message"
+    id = Column(Integer, primary_key=True)
+    sender_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    recipient_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    content = Column(String(500), nullable=False)
+    timestamp = Column(DateTime, default=datetime.datetime.now)
+    is_read = Column(Boolean, default=False, nullable=False)
+
+    sender = relationship("User", foreign_keys=[sender_id], back_populates="sent_messages")
+    recipient = relationship("User", foreign_keys=[recipient_id], back_populates="received_messages")
+
+    def __init__(self, sender_id, recipient_id, content):
+        self.sender_id = sender_id
+        self.recipient_id = recipient_id
+        self.content = content
+
 # endregion
 
 # region Pydantic Models
@@ -106,6 +127,20 @@ class InputPayment(BaseModel):
 class InputUserAddCareer(BaseModel):
     id_user: int
     id_career: int
+
+class InputMessage(BaseModel):
+    recipient_id: int
+    content: str
+
+class MessageResponse(BaseModel):
+    id: int
+    sender_id: int
+    content: str
+    timestamp: datetime.datetime
+    is_read: bool
+    
+    class Config:
+        from_attributes = True
 # endregion
 
 # region configuraciones 
