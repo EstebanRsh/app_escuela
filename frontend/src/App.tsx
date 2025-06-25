@@ -17,6 +17,7 @@ const SignupDesarrollador = lazy(
 );
 const StudentCareers = lazy(() => import("./components/student/StudentCareer"));
 const CareerManagement  = lazy(() => import("./components/admin/CareerManagement"));
+const StudentPayments = lazy(() => import("./components/student/StudentPayments"));
 function App() {
   return (
     <BrowserRouter>
@@ -45,6 +46,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/student/careers" element={<StudentCareers />} />
             <Route path="/admin/careers" element={<CareerManagement />} />
+            <Route path="/student/payments" element={<StudentPayments />} />
           </Route>
         </Route>
       </Routes>

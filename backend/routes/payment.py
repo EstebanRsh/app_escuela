@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from models.modelo import Payment, InputPayment, User ,session
+from models.modelo import Payment, InputPayment, User ,session, Notification 
 from sqlalchemy.orm import joinedload
+
 
 payment = APIRouter()
 
@@ -52,15 +53,39 @@ def payament_user(_username: str):
 @payment.post("/payment/add")
 def add_payment(pay:InputPayment):
     try:
+        # Inicia la transacción
+        session.begin()
+
+        # Crea el nuevo pago
         newPayment = Payment(pay.id_career, pay.id_user, pay.amount, pay.affected_month)
         session.add(newPayment)
+        
+        # Refresca la sesión para obtener los datos relacionados (usuario, carrera)
+        session.flush()
+        session.refresh(newPayment)
+
+        # Prepara y crea la notificación para el alumno
+        monto_formateado = f"${newPayment.amount:,.2f}"
+        mensaje_notificacion = f"Se registró tu pago de {monto_formateado} para la carrera '{newPayment.career.name}' correspondiente al mes de {newPayment.affected_month.strftime('%B %Y')}."
+        
+        nueva_notificacion = Notification(
+            id_user=newPayment.id_user,
+            message=mensaje_notificacion
+        )
+        session.add(nueva_notificacion)
+
+        # Confirma todos los cambios en la base de datos
         session.commit()
-        res = f"Pago para el alumno {newPayment.user.userdetail.first_name} {newPayment.user.userdetail.last_name}, aguardado!"
+        
+        res = f"Pago para el alumno {newPayment.user.userdetail.first_name} {newPayment.user.userdetail.last_name}, aguardado y notificado!"
         print(res)
-        return res
+        return {"message": res}
+
     except Exception as ex:
-        session.rollback()
+        session.rollback() # Si algo falla, revierte todos los cambios
         print("Error al guardar un pago --> ", ex)
+        # Devuelve un error JSON para que el frontend pueda manejarlo
+        return JSONResponse(status_code=500, content={"message": "Error al procesar el pago."})
     finally:
         session.close()
 
