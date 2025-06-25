@@ -78,7 +78,7 @@ const PaymentManagement = () => {
   };
   const navigate = useNavigate();
   const handleShowPayment = () => {
-    navigate("/addPayment"); // Asegúrate que esta ruta esté definida
+    navigate("/addPayment"); 
   };
 
   return (

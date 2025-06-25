@@ -9,15 +9,25 @@ const Login = lazy(() => import("./components/Login"));
 const Signup = lazy(() => import("./components/Signup"));
 const Dashboard = lazy(() => import("./components/Dashboard"));
 const Profile = lazy(() => import("./components/Profile"));
-const NotificationSender = lazy(() => import('./components/admin/NotificationSender'));
+const NotificationSender = lazy(
+  () => import("./components/admin/NotificationSender")
+);
 const Nosotros = lazy(() => import("./components/Nosotros"));
 const UserManagement = lazy(() => import("./components/admin/UserManagement"));
 const SignupDesarrollador = lazy(
   () => import("./components/SignupDesarrollador")
 );
 const StudentCareers = lazy(() => import("./components/student/StudentCareer"));
-const CareerManagement  = lazy(() => import("./components/admin/CareerManagement"));
-const StudentPayments = lazy(() => import("./components/student/StudentPayments"));
+const CareerManagement = lazy(
+  () => import("./components/admin/CareerManagement")
+);
+const StudentPayments = lazy(
+  () => import("./components/student/StudentPayments")
+);
+const PaymentsManagement = lazy(
+  () => import("./components/admin/PaymentManagement")
+);
+const AddPayment = lazy(() => import("./components/admin/AddPayment"));
 function App() {
   return (
     <BrowserRouter>
@@ -42,11 +52,16 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin/users" element={<UserManagement />} />
-            <Route path="/admin/send-notification" element={<NotificationSender />} />
+            <Route
+              path="/admin/send-notification"
+              element={<NotificationSender />}
+            />
             <Route path="/profile" element={<Profile />} />
             <Route path="/student/careers" element={<StudentCareers />} />
             <Route path="/admin/careers" element={<CareerManagement />} />
+            <Route path="/admin/payments" element={<PaymentsManagement />} />
             <Route path="/student/payments" element={<StudentPayments />} />
+            <Route path="/addPayment" element={<AddPayment />} />
           </Route>
         </Route>
       </Routes>

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Request
 from fastapi.responses import JSONResponse
-from models.modelo import session, User, UserDetail, PivoteUserCareer, InputUser, InputLogin, InputUserAddCareer
+from models.modelo import session, User, UserDetail, PivoteUserCareer, InputUser, InputLogin, InputUserAddCareer, Notification 
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 from auth.security import Security
@@ -155,10 +155,24 @@ def login_post(usu: InputLogin):
 ## Inscribir un alumno a una carrera      
 @user.post("/user/addcareer")
 def addCareer(ins: InputUserAddCareer):
-    try: 
+    try:
+        session.begin()
+        
         newInsc = PivoteUserCareer(ins.id_user, ins.id_career)
         session.add(newInsc)
+
+        # Refrescamos la sesión para poder acceder a los nombres
+        session.flush()
+        session.refresh(newInsc)
+
+        # Creamos la notificación para el alumno
+        mensaje_notif = f"Has sido inscripto/a en la carrera: '{newInsc.career.name}'."
+        notificacion = Notification(id_user=ins.id_user, message=mensaje_notif)
+        session.add(notificacion)
+        
+        # Confirmamos todo
         session.commit()
+        
         res = f"{newInsc.user.userdetail.first_name} {newInsc.user.userdetail.last_name} fue inscripto correctamente a {newInsc.career.name}"
         print(res)
         return res
@@ -166,7 +180,8 @@ def addCareer(ins: InputUserAddCareer):
         session.rollback()
         print("Error al inscribir al alumno:", ex)
         import traceback
-        traceback.print_exc()    
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"message": "Error al inscribir al alumno."})
     finally:
         session.close()
 

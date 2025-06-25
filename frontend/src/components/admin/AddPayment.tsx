@@ -1,5 +1,5 @@
 import { useState, type FormEvent, type ChangeEvent, useEffect } from "react";
-import InfoContainer from './common/InfoContainer';
+import InfoContainer from '../common/InfoContainer';
 import { useNavigate } from "react-router-dom";
 
 const initialFormState = {
